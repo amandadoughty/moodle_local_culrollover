@@ -1,0 +1,98 @@
+/* module selector too short to read codes 
+   make a reasonable width to show standard module code and then 
+   allow scroll if overflow
+*/
+body#page-mod-local_culrollover .select2-container .select2-choice {
+  width: 230px;
+}
+body#page-mod-local_culrollover .select2-results {
+  overflow-x: scroll;
+}
+
+.populated{
+    position: relative;
+}
+
+.populated:hover:after{
+    background: #333;
+    background: rgba(0,0,0,.8);
+    border-radius: 5px;
+    bottom: 26px;
+    color: #fff;
+    content: attr(title);
+    left: 20%;
+    padding: 5px 20px;
+    position: absolute;
+    z-index: 98;
+    width: 220px;
+}
+
+.populated:hover:before{
+    border: solid;
+    border-color: #333 transparent;
+    border-width: 6px 6px 0 6px;
+    bottom: 20px;
+    content: "";
+    left: 50%;
+    position: absolute;
+    z-index: 99;
+}
+
+body#page-mod-local_culrollover td.populated {
+    background-color: #f2dede;
+}
+
+.editable-click {
+    border-bottom: none;
+}
+
+#select_courses_form .fcontainer {
+    width: 100%;
+}
+
+#select_courses_form .fitem_fselect,
+#select_courses_form .femptylabel {
+    display: inline-block;
+    width: 49%; /* Not sure why 50% does not work. Pixel values are fine */
+}
+
+#select_courses_form .fitem div.fitemtitle {
+    display: none;
+    float: none;
+    width: auto;
+    text-align: left;
+}
+
+#select_courses_form #fitem_id_source_0 div.fitemtitle,
+#select_courses_form #fitem_id_dest_0 div.fitemtitle {
+    display: inline-block;
+}
+
+@media (min-width: 1200px) {
+    #select_courses_form .fitem .felement {
+        margin-left: 0;
+    }
+}
+
+#select_courses_form .fitem_actionbuttons {
+    margin-top: 2em;
+    text-align: center;
+}
+
+.select2-container {
+    width: 100%!important;
+}
+
+#previous tr td:nth-child(1),
+#previous tr th:nth-child(1),
+#previous tr td:nth-child(2),
+#previous tr th:nth-child(2) {
+    display: none;
+}
+
+.jsenabled #previous tr td:nth-child(1),
+.jsenabled #previous tr th:nth-child(1),
+.jsenabled #previous tr td:nth-child(2),
+.jsenabled #previous tr th:nth-child(2) {
+    display: table-cell;
+}

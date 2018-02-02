@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="local/culrollover/db" VERSION="20140623" COMMENT="XMLDB file for Moodle local/culrollover"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="cul_rollover" COMMENT="cul_rollover table retrofitted from MySQL">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="true" NEXT="sourceid"/>
+        <FIELD NAME="sourceid" TYPE="int" LENGTH="18" NOTNULL="true" SEQUENCE="false" PREVIOUS="id" NEXT="destid"/>
+        <FIELD NAME="destid" TYPE="int" LENGTH="18" NOTNULL="true" SEQUENCE="false" PREVIOUS="sourceid" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="18" NOTNULL="true" SEQUENCE="false" PREVIOUS="destid" NEXT="datesubmitted"/>
+        <FIELD NAME="datesubmitted" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false" PREVIOUS="userid" NEXT="status"/>
+        <FIELD NAME="status" TYPE="char" LENGTH="15" NOTNULL="true" SEQUENCE="false" PREVIOUS="datesubmitted" NEXT="schedule"/>
+        <FIELD NAME="schedule" TYPE="int" LENGTH="9" NOTNULL="true" SEQUENCE="false" PREVIOUS="status" NEXT="type"/>
+        <FIELD NAME="type" TYPE="char" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" PREVIOUS="schedule" NEXT="merge"/>
+        <FIELD NAME="merge" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="type" NEXT="groups"/>
+        <FIELD NAME="groups" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="merge" NEXT="enrolments"/>
+        <FIELD NAME="enrolments" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="groups" NEXT="visible"/>
+        <FIELD NAME="visible" TYPE="int" LENGTH="2" NOTNULL="true" SEQUENCE="false" PREVIOUS="enrolments" NEXT="visibledate"/>
+        <FIELD NAME="visibledate" TYPE="int" LENGTH="9" NOTNULL="false" SEQUENCE="false" PREVIOUS="visible" NEXT="completiondate"/>
+        <FIELD NAME="completiondate" TYPE="int" LENGTH="9" NOTNULL="false" SEQUENCE="false" PREVIOUS="visibledate" NEXT="notify"/>
+        <FIELD NAME="notify" TYPE="text" NOTNULL="false" SEQUENCE="false" PREVIOUS="completiondate" NEXT="template"/>
+        <FIELD NAME="template" TYPE="int" LENGTH="18" NOTNULL="false" SEQUENCE="false" COMMENT="Template Course ID" PREVIOUS="notify"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="id" TYPE="primary" FIELDS="id" COMMENT="primary key"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="fk_cul_src_id_idx" UNIQUE="false" FIELDS="sourceid" NEXT="fk_cul_usr_id_idx"/>
+        <INDEX NAME="fk_cul_usr_id_idx" UNIQUE="false" FIELDS="userid" PREVIOUS="fk_cul_src_id_idx" NEXT="fk_cul_dst_id_idx"/>
+        <INDEX NAME="fk_cul_dst_id_idx" UNIQUE="false" FIELDS="destid" PREVIOUS="fk_cul_usr_id_idx"/>
+      </INDEXES>
+    </TABLE>
+  </TABLES>
+</XMLDB>

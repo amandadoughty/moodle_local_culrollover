@@ -28,22 +28,17 @@ $capabilities = array(
     'local/culrollover:view' => array(
         'riskbitmask' => RISK_DATALOSS,
         'captype' => 'read',
-        'contextlevel' => CONTEXT_USER,
+        'contextlevel' => CONTEXT_SYSTEM,
         'archetypes' => array(
-            'manager' => CAP_ALLOW
+            'user' => CAP_ALLOW
         ),
-
-        'clonepermissionsfrom' => 'moodle/site:viewreports',
     ),
     'local/culrollover:delete' => array(
         'riskbitmask' => RISK_DATALOSS,
         'captype' => 'write',
-        'contextlevel' => CONTEXT_USER,
+        'contextlevel' => CONTEXT_SYSTEM,
         'archetypes' => array(
-            'manager' => CAP_ALLOW
+            'user' => CAP_ALLOW
         ),
-
-        'clonepermissionsfrom' => 'moodle/site:viewreports',
     )
 );
-?>

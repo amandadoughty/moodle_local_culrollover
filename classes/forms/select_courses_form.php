@@ -165,7 +165,7 @@ class select_courses_form extends moodleform {
         }
 
         // Add the JS to make the select inputs dynamic.
-        $PAGE->requires->js_call_amd('local_culrollover/selectcourses', 'initialise', array($CFG->rollover_delay));
+        $PAGE->requires->js_call_amd('local_culrollover/selectcourses', 'initialise', [$CFG->rollover_delay, $CFG->rollover_chars]);
         
         // Include all the default values in case the form is being submitted to add more courses.
         $mform->addElement('hidden', 'defaultwhen', $this->_customdata['defaultwhen']);

@@ -27,7 +27,7 @@ namespace local_culrollover\task;
 
 date_default_timezone_set('Europe/London');
 
-// php admin/tool/task/cli/schedule_task.php --execute=\\local_culrollover\\task\\rollover_task
+// php admin/cli/scheduled_task.php --execute=\\local_culrollover\\task\\rollover_task
 
 class rollover_task extends \core\task\scheduled_task {
 
@@ -53,7 +53,7 @@ class rollover_task extends \core\task\scheduled_task {
 
         mtrace("\n\n CUL Rollover running on " . date('l', time()) . "\n");
 
-        $records = $DB->get_records('cul_rollover', array('status' => 'Pending'));
+        $records = $DB->get_records('cul_rollover', ['status' => 'Pending']);
         
         if($records){
             foreach ($records as $record) {
@@ -64,15 +64,15 @@ class rollover_task extends \core\task\scheduled_task {
                     mtrace(" ... copy_courses failed. \n\n");
                     mtrace(" ... {$e->getMessage()} \n\n");
 
-                    // try{
-                        $params = array(
+                    try{
+                        $params = [
                             'context' => $context = \context_course::instance($record->destid),
                             'objectid' => $record->id,
                             'relateduserid' => $record->userid,
-                            'other' => array(
+                            'other' => [
                                 'error' => $e->getMessage()
-                                )
-                        );
+                                ]
+                        ];
 
                         $event = \local_culrollover\event\rollover_failed::create($params);
                         $snapshot = clone($record);
@@ -83,11 +83,13 @@ class rollover_task extends \core\task\scheduled_task {
                         $record->status = 'Failed';
                         $DB->update_record('cul_rollover', $record);
                         // Update the destination course record in case the failure left it renamed.
-                        $rollover->update_course_settings();
-                    // } catch (\Exception $e) {
+                        if (isset($rollover)) {
+                            $rollover->update_course_settings();
+                        }
+                    } catch (\Exception $e) {
                         mtrace(" ... status update failed. \n\n");
                         mtrace(" ... {$e->getMessage()} \n\n");
-                    // }
+                    }
                 }
             }
         } else {
@@ -96,5 +98,4 @@ class rollover_task extends \core\task\scheduled_task {
         
         mtrace("  ... and we are done. \n\n");
     }
-
 }

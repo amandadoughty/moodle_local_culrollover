@@ -44,9 +44,7 @@ $PAGE->requires->jquery_plugin('ui');
 $PAGE->requires->js(new moodle_url('https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/js/jqueryui-editable.min.js'), true);
 $PAGE->requires->css(new moodle_url('https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/css/jqueryui-editable.css'));
 $PAGE->requires->css(new moodle_url('https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet'));
-
 $PAGE->requires->js('/local/culrollover/js/cul_rollover.js', true);
-$PAGE->requires->js('/local/culrollover/js/common.js', false);
 $PAGE->requires->css('/local/culrollover/css/style.css');
 
 $step = optional_param('step', 0, PARAM_INT);
@@ -66,7 +64,7 @@ $form = '';
 $message = '';
 
 if($delentry) {
-    if(has_capability('local/culrollover:view', context_user::instance($USER->id))) {
+    if(has_capability('local/culrollover:view', $context)) {
         $record = $DB->get_record('cul_rollover', array('id' => $delentry));
         // Must be owner of record or sys admin to delete.
         if ($record) {
@@ -76,9 +74,9 @@ if($delentry) {
                 $cfullname = fullname($cuser);
                 $date = date('d/M/Y', $record->datesubmitted);
                 $sourcecourse = $DB->get_record('course', array('id' => $record->sourceid));
-                $sourcecoursename = $sourcecourse->shortname;
+                $sourcecoursename = $sourcecourse? $sourcecourse->shortname : get_string('deleted');
                 $destcourse = $DB->get_record('course', array('id' => $record->destid));
-                $destcoursename = $destcourse->shortname;
+                $destcoursename = $destcourse? $destcourse->shortname : get_string('deleted');
                 $dfullname = fullname($USER);
                 $logstr = "Deleted rollover (id= $delentry) for $cfullname (submitted: $date $sourcecoursename -> $destcoursename). Record deleted by $dfullname.";
 
@@ -123,9 +121,9 @@ if($repentry) {
                 $cfullname = fullname($cuser);
                 $date = date('d/M/Y', $record->datesubmitted);
                 $sourcecourse = $DB->get_record('course', array('id' => $record->sourceid));
-                $sourcecoursename = $sourcecourse->shortname;
+                $sourcecoursename = $sourcecourse? $sourcecourse->shortname : get_string('deleted');
                 $destcourse = $DB->get_record('course', array('id' => $record->destid));
-                $destcoursename = $destcourse->shortname;
+                $destcoursename = $destcourse? $destcourse->shortname : get_string('deleted');
                 $dfullname = fullname($USER);
                 $logstr = "Repeated rollover (id= $repentry) for $cfullname (submitted: $date $sourcecoursename -> $destcoursename). Rollover repeated by $dfullname.";
                 $repeated .= html_writer::tag('p', $logstr);

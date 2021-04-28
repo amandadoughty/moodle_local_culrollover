@@ -145,8 +145,8 @@ $columns = array(
         'dt' => 14
         ),
     array(
-        'db' => 'groups',
-        'al' => 'cr.groups',  
+        'db' => 'includegroups',
+        'al' => 'cr.includegroups',  
         'dt' => 15
         ),
     array(

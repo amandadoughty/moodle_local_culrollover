@@ -107,8 +107,12 @@ $string['dest_regex_identifier'] = "Specify Destination Course RegEx Filter";
 $string['allowedroles'] = 'Select Roles';
 $string['rollover_debugging'] = "Enable Rollover Debugging";
 $string['rollover_debugging_desc'] = "Enable extra messages to be displayed in the cron log for the rollover";
+$string['rollover_chars'] = "Number of characters.";
+$string['rollover_chars_desc'] = "Set the number of characters that must be typed before the search starts.";
 $string['rollover_delay'] = "Delay.";
 $string['rollover_delay_desc'] = "Set select box typing delay.";
+$string['includeh5p'] = "Include H5P Activities.";
+$string['includeh5p_desc'] = "After the upgrade this setting may be used to exclude  H5P activities from rollover.";
 $string['allowedroles_desc'] = 'Select roles which can be rolled forward';
 $string['startat_helper'] ='What time should the rollover cron be allowed to run';
 $string['stopat_helper'] = 'What time should the rollover cron be stopped?';
@@ -129,8 +133,8 @@ Clicking Continue will take you back to Moodle home.";
 $string['invalidcourseshortname'] = "A module shortname supplied is invalid! Please review the CSV upload file and retry.";
 $string['invalidcourseformigration'] = "The specified module is not a valid source module or a valid destination module. Please contact your school administrator or Service Desk for assistance.";
 $string['invalidextparam'] = 'The backup option {$a} is invalid';
-$string['invaliddstcourseid'] = 'The source course id {$a} is invalid';
-$string['invalidsrccourseid'] = 'The destination course id {$a} is invalid';
+$string['invaliddstcourseid'] = 'The destination course id {$a} is invalid';
+$string['invalidsrccourseid'] = 'The source course id {$a} is invalid';
 $string['emptycourseselection'] = "You have not selected any courses for rollover. Please select a course from the previous page";
 $string['inserterror'] = "There was a problem adding one or more of your rollovers";
 $string['backupprecheckerrors'] = 'There were errors in the backup precheck: {$a}';
@@ -166,12 +170,34 @@ $string['culrollover:view'] = "View rollovers";
 $string['eventrollover_deleted'] = "Rollover delete";
 $string['eventrollover_completed'] = "Rollover complete";
 $string['eventrollover_failed'] = "Rollover failed";
+$string['eventdestinationlocked'] = "The course has been edited";
 
 // Task strings.
 $string['rollovertask'] = "Rollover processing";
 
-
-
-
-
+// Privacy API
+$string['privacy:metadata:cul_rollover'] = 'cul_rollover';
+$string['privacy:metadata:cul_rollover_config'] = 'cul_rollover_config';
+$string['privacy:metadata:local_culrollover'] = 'local_culrollover';
+$string['privacy:metadata:local_culrollover'] = 'Stores the rollover details.';
+$string['privacy:metadata:local_culrollover:sourceid'] = 'The id of the source course.';
+$string['privacy:metadata:local_culrollover:destid'] = 'The id of the destination course';
+$string['privacy:metadata:local_culrollover:userid'] = 'The id of the user.';
+$string['privacy:metadata:local_culrollover:datesubmitted'] = 'The date the rollover was submited.';
+$string['privacy:metadata:local_culrollover:status'] = 'The status of the rollover: complete/pending/failed.';
+$string['privacy:metadata:local_culrollover:schedule'] = 'The scheduled date for the rollover.';
+$string['privacy:metadata:local_culrollover:type'] = 'The type of rollover: content/all - deprecated.';
+$string['privacy:metadata:local_culrollover:merge'] = 'Indicates if the rollover is: merge/delete first.';
+$string['privacy:metadata:local_culrollover:groups'] = 'Indicates whether to include groups and groupings.';
+$string['privacy:metadata:local_culrollover:enrolments'] = 'Indicates whether to include enrolments.';
+$string['privacy:metadata:local_culrollover:visible'] = 'Indicates whether to: Make visible/hide/make visible on a given date.';
+$string['privacy:metadata:local_culrollover:visibledate'] = 'The date to make the course visible.';
+$string['privacy:metadata:local_culrollover:completiondate'] = 'The date the rollover completed.';
+$string['privacy:metadata:local_culrollover:notify'] = 'The list of roles to notify when the rollover is complete.';
+$string['privacy:metadata:local_culrollover:template'] = 'The template to use - deprecated.';
+$string['privacy:metadata:local_culrollover_config'] = 'Stores extra rollover config data.';
+$string['privacy:metadata:local_culrollover:courseid'] = 'The course id.';
+$string['privacy:metadata:local_culrollover:name'] = 'The config setting name.';
+$string['privacy:metadata:local_culrollover:value'] = 'The config setting value.';
+$string['privacy:metadata:local_culrollover:timemodified'] = 'The time the config setting was modified.';
 

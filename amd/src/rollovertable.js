@@ -8,7 +8,7 @@
   * @module local_culrollover/rollovertable
   */
 
-    define(['jquery', 'datatables'], function($) {
+    define(['jquery', 'local_culrollover/datatables'], function($) {
         return {
             initialise: function (sEmptyTable) {
                 $('#previous').dataTable({

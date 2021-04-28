@@ -78,7 +78,7 @@ class rollover {
 
         $this->record->status = 'Processing';
 
-        $opt[] = array('name' => 'groups', 'value' => (int)$this->record->groups);
+        $opt[] = array('name' => 'groups', 'value' => (int)$this->record->includegroups);
 
         switch($this->record->type) {
             case COPY_EVERYTHING:
@@ -154,7 +154,7 @@ class rollover {
         // Update the destination course record with all the changes.
         $this->update_course_settings();
 
-        // Remove assignments and forums with turnitin plagerism on.
+        // Remove assignments and forums with turnitin plagarism on.
         $this->debug("   attempting to remove assignments and forums with turnitin plagarism on now \n");
         $this->delete_turnitin_activities($modinfobeforerollover);
         $this->delete_forum_activities($modinfobeforerollover);
@@ -175,7 +175,6 @@ class rollover {
         );
 
         $event = \local_culrollover\event\rollover_completed::create($params);
-        $this->record->id = $this->record->id;
         $event->add_record_snapshot('cul_rollover', $this->record);
         $event->trigger();
 
@@ -258,7 +257,7 @@ class rollover {
                 $USER->id
                 );
 
-            // Set the default filename - does not work.
+            // Set the filename.
             $format = $bc->get_format();
             $type = $bc->get_type();
             $id = $bc->get_id();
@@ -268,10 +267,11 @@ class rollover {
             $bc->get_plan()->get_setting('filename')->set_value(\backup_plan_dbops::get_default_backup_filename($format, $type,
                     $id, $users, $anonymised));
 
+            $name = $this->record->id . '-' . $bc->get_plan()->get_setting('filename')->get_value();
             $bc->execute_plan();
-
             $results = $bc->get_results();
             $file = $results['backup_destination'];
+            $file->rename($file->get_filepath(), $name);
 
             $bc->destroy();
         }
@@ -286,8 +286,8 @@ class rollover {
             $USER->id
             );
 
-        foreach ($backupsettings as $name => $value) {
-            $bc->get_plan()->get_setting($name)->set_value($value);
+        foreach ($backupsettings as $key => $value) {
+            $bc->get_plan()->get_setting($key)->set_value($value);
         }
 
         $backupid = $bc->get_backupid();
@@ -334,18 +334,43 @@ class rollover {
                 );
         }
 
-        foreach ($backupsettings as $name => $value) {
-            $rc->get_plan()->get_setting($name)->set_value($value);
+        foreach ($backupsettings as $key => $value) {
+            $rc->get_plan()->get_setting($key)->set_value($value);
         }
 
         foreach ($rc->get_plan()->get_tasks() as $taskindex => $task) {
             $settings = $task->get_settings();
 
             foreach ($settings as $settingindex => $setting) {
-                // Set included false for activity, since we controlled it
-                // more accurately (i.e. true only for glossary) in backup.
+                if (preg_match('/^keep_roles_and_enrolments$/', $setting->get_name())) {
+                    $setting->set_value(true);
+                }
+
+                if (preg_match('/^keep_groups_and_groupings$/', $setting->get_name())) {
+                    $setting->set_value(true);
+                }
+
+                // Set included false for activity.
                 if (preg_match('/^turnitin.*_([0-9])*_included$/', $setting->get_name())) {
                     $setting->set_value(false);
+                }
+
+                if (preg_match('/^lti.*_([0-9])*_included$/', $setting->get_name())) {
+                    $setting->set_value(false);
+                }
+
+                if (preg_match('/^peerassessment*_([0-9])*_included$/', $setting->get_name())) {
+                    $setting->set_value(false);
+                }
+
+                // if (preg_match('/^aspirelist.*_([0-9])*_included$/', $setting->get_name())) {
+                //     $setting->set_value(false);
+                // }
+
+                if (!$CFG->includeh5p) {
+                    if (preg_match('/^hvp.*_([0-9])*_included$/', $setting->get_name())) {
+                        $setting->set_value(false);
+                    }
                 }
             }
         }
@@ -407,20 +432,26 @@ class rollover {
      */
     public function move_area_files_to_new_filearea($contextid, $oldcomponent, $newcomponent, $oldfilearea, $newfilearea) {
         $count = 0;
+        $failedfiles = [];
         $fs = get_file_storage();
-
         $oldfiles = $fs->get_area_files($contextid, $oldcomponent, $oldfilearea);
 
         foreach ($oldfiles as $oldfile) {
+            $oldname = $oldfile->get_filename();          
             $filerecord = new \stdClass();
             $filerecord->component = $newcomponent;
             $filerecord->filearea = $newfilearea;
-            $fs->create_file_from_storedfile($filerecord, $oldfile);
-            $count += 1;
+
+            try {
+                $newfile = $fs->create_file_from_storedfile($filerecord, $oldfile);
+                $oldfile->delete();
+            } catch (\Exception $e) {
+                $failedfiles[] = $filerecord->filename;
+            }
         }
 
-        if ($count) {
-            $fs->delete_area_files($contextid, $oldcomponent, $oldfilearea);
+        if ($failedfiles) {
+            mtrace('Unable to copy file/s: ' . join(', ', $failedfiles));
         }
     }
 
@@ -469,7 +500,7 @@ class rollover {
     }
 
     /**
-     * Remove all turnitin activities from a course - Turnitin v2 assignments are also handled!!
+     * Remove turnitin enabled assignment activities from a course.
      */
 
     private function delete_turnitin_activities($modinfobeforerollover) {
@@ -511,7 +542,7 @@ class rollover {
                 course_delete_module($cm);
             }
         }
-        // TODO can be forum and other mods too
+        // TODO can be other mods too?
     }
 
     /**

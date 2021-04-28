@@ -39,8 +39,8 @@ class review_options_form extends moodleform {
         $table = new html_table();
         $table->id = 'datatable';
         $migrate = '';
-        $row = array();
-        $table->head = array(
+        $row = [];
+        $headers = [
             get_string('source_header', 'local_culrollover'), 
             get_string('dest_header', 'local_culrollover'), 
             get_string('migration_date', 'local_culrollover'),
@@ -51,14 +51,16 @@ class review_options_form extends moodleform {
             get_string('visiblity', 'local_culrollover'),
             get_string('visiblefromdate', 'local_culrollover'),
             get_string('deleterow', 'local_culrollover')
-            );
+            ];
+
+        $table->head = $headers;
 
         $cellmigrate = $this->_customdata['defaultmigrateondate'];
         $cellwhat = $this->get_copy_content_options($this->_customdata['defaultwhat']);
         $cellmerge = $this->get_merge_options($this->_customdata['defaultmerge']);
         $cellgroups = $this->get_group_options($this->_customdata['defaultgroups']);
         $cellvisible = $this->get_visibility_options($this->_customdata['defaultvisible']);
-        $celldelete = html_writer::link('#', 'Remove', array('class' => 'DeleteRow'));
+        $celldelete = html_writer::link('#', 'Remove', ['class' => 'DeleteRow']);
         $defaultroles = explode(',', $this->_customdata['defaultroles']);
         $allroles = $DB->get_records('role');
         $displayrolenames = '';
@@ -69,7 +71,7 @@ class review_options_form extends moodleform {
         // Get the js value and source strings to pass to createEditableFields().
         if($CFG->allowedroles != '') {
             $rolesallowed = explode(',', $CFG->allowedroles);
-            $jsrolessourcearray = array();
+            $jsrolessourcearray = [];
 
             foreach($rolesallowed as $roleid) {
                 $jsrolessourcearray[] = "{ value: $roleid, text :'{$allroles[$roleid]->shortname}'}";
@@ -120,42 +122,42 @@ class review_options_form extends moodleform {
                 'hidden',
                 "source[$count]", 
                 $this->_customdata['source'][$count],
-                array('id' => "source_$count")
+                ['id' => "source_$count"]
                 );
             $mform->setType("source[$count]", PARAM_TEXT);
             $mform->addElement(
                 'hidden',
                 "dest[$count]",  
                 $this->_customdata['dest'][$count],
-                array('id' => "dest_$count")
+                ['id' => "dest_$count"]
                 );
             $mform->setType("dest[$count]", PARAM_TEXT);
             $mform->addElement(
                 'hidden',
                 "migrateondate[$count]", 
                 $this->_customdata['migrateondate'][$count],
-                array('id' => "migrateondate_$count") 
+                ['id' => "migrateondate_$count"] 
                 );
             $mform->setType("migrateondate[$count]", PARAM_INT);
             $mform->addElement(
                 'hidden',
                 "what[$count]", 
                 $this->_customdata['what'][$count],
-                array('id' => "what_$count")
+                ['id' => "what_$count"]
                 );
             $mform->setType("what[$count]", PARAM_INT);
             $mform->addElement(
                 'hidden',
                 "groups[$count]", 
                 $this->_customdata['groups'][$count],
-                array('id' => "groups_$count") 
+                ['id' => "groups_$count"]
                 );
             $mform->setType("groups[$count]", PARAM_INT);
             $mform->addElement(
                 'hidden',
                 "merge[$count]", 
                 $this->_customdata['merge'][$count],
-                array('id' => "merge_$count")
+                ['id' => "merge_$count"]
                 );
             $mform->setType("merge[$count]", PARAM_INT);
 
@@ -163,7 +165,7 @@ class review_options_form extends moodleform {
                 'hidden',
                 "roles[$count]",
                 $roles,
-                array('id' => "roles_$count")
+                ['id' => "roles_$count"]
                 );
             $mform->setType("roles[$count]", PARAM_TEXT);         
             
@@ -171,14 +173,14 @@ class review_options_form extends moodleform {
                 'hidden',
                 "visible[$count]",
                 $this->_customdata['visible'][$count],
-                array('id' => "visible_$count")
+                ['id' => "visible_$count"]
                 );
             $mform->setType("visible[$count]", PARAM_INT);
             $mform->addElement(
                 'hidden',
                 "visibleondate[$count]",
                 $this->_customdata['visibleondate'][$count],
-                array('id' => "visibleondate_$count")
+                ['id' => "visibleondate_$count"]
                 );
             $mform->setType("visibleondate[$count]", PARAM_INT);
 
@@ -186,14 +188,14 @@ class review_options_form extends moodleform {
             if($this->is_course_populated($this->_customdata['dest'][$count])) {
                 $destclass = "destination populated tooltip-content";
                 // If populated give a link to dest.
-                $desturl = new moodle_url('/course/view.php', array('id' => $this->_customdata['dest'][$count]));
-                $celldest = html_writer::link($desturl, $destname, array('target' => '_blank'));
+                $desturl = new moodle_url('/course/view.php', ['id' => $this->_customdata['dest'][$count]]);
+                $celldest = html_writer::link($desturl, $destname, ['target' => '_blank']);
             } else {
                 $destclass = "destination";
                 $celldest = $destname;                
             }            
 
-            $row[] = array(
+            $row[] = [
                 $this->get_cell_data("source[$count]", $srcname, 'source'),
                 $this->get_cell_data("dest[$count]", $celldest, $destclass),
                 $this->get_cell_data("migrateondate[$count]", date('d/M/Y', $cellmigrate), 'migrateondate'),
@@ -204,7 +206,7 @@ class review_options_form extends moodleform {
                 $this->get_cell_data("visible[$count]", $cellvisible, 'visible'),
                 $this->get_cell_data("visibleondate[$count]", $visibleondate, 'visibleondate'),
                 $this->get_cell_data("delete[$count]", $celldelete)
-                );
+                ];
 
             $hasrollovers = true;
             $count ++;
@@ -219,64 +221,64 @@ class review_options_form extends moodleform {
         $mform->addElement('html', html_writer::table($table));
 
         // TODO better way
-        $params = array();        
+        $params = [];        
 
-        $groups = array(
+        $groups = [
             'value' => $this->_customdata['defaultgroups'],
-            'source' => array(
-                    array(
-                        'value' => DO_NOT_COPY_GROUPS,
-                        'text' => get_string('nogroups', 'local_culrollover'),
-                        ),
-                    array(
-                        'value' => COPY_GROUPS,
-                        'text' => get_string('groups', 'local_culrollover'),
-                        )
-                )
-            );
+            'source' => [
+                [
+                    'value' => DO_NOT_COPY_GROUPS,
+                    'text' => get_string('nogroups', 'local_culrollover'),
+                    ],
+                [
+                    'value' => COPY_GROUPS,
+                    'text' => get_string('groups', 'local_culrollover'),
+                    ]
+                ]
+            ];
 
-        $params['groups'] = $groups;
+        $params['includegroups'] = $groups;
 
-        $merge = array(
+        $merge = [
             'value' => $this->_customdata['defaultmerge'],
-            'source' => array(
-                    array(
-                        'value' => MERGE_EXISTING_CONTENT,
-                        'text' => get_string('merge', 'local_culrollover'),
-                        ),
-                    array(
-                        'value' => DELETE_EXISTING_CONTENT,
-                        'text' => get_string('delete', 'local_culrollover'),
-                        )
-                )
-            );
+            'source' => [
+                [
+                    'value' => MERGE_EXISTING_CONTENT,
+                    'text' => get_string('merge', 'local_culrollover'),
+                    ],
+                [
+                    'value' => DELETE_EXISTING_CONTENT,
+                    'text' => get_string('delete', 'local_culrollover'),
+                    ]
+                ]
+            ];
 
         $params['merge'] = $merge;
 
-        $roles = array(
+        $roles = [
             'value' => $jsrolesvalue,
             'source' => $jsrolessource
-            );
+            ];
 
         $params['roles'] = $roles;
 
-        $visible = array(
+        $visible = [
             'value' => $this->_customdata['defaultvisible'],
-            'source' => array(
-                    array(
-                        'value' => COURSE_HIDDEN,
-                        'text' => $this->get_visibility_options(COURSE_HIDDEN),
-                        ),
-                    array(
-                        'value' => COURSE_VISIBLE_NOW,
-                        'text' => $this->get_visibility_options(COURSE_VISIBLE_NOW),
-                        ),
-                    array(
-                        'value' => COURSE_VISIBLE_LATER,
-                        'text' => $this->get_visibility_options(COURSE_VISIBLE_LATER),
-                        )
-                )
-            );
+            'source' => [
+                [
+                    'value' => COURSE_HIDDEN,
+                    'text' => $this->get_visibility_options(COURSE_HIDDEN),
+                    ],
+                [
+                    'value' => COURSE_VISIBLE_NOW,
+                    'text' => $this->get_visibility_options(COURSE_VISIBLE_NOW),
+                    ],
+                [
+                    'value' => COURSE_VISIBLE_LATER,
+                    'text' => $this->get_visibility_options(COURSE_VISIBLE_LATER),
+                    ]
+                ]
+            ];
 
         $params['visible'] = $visible;
         $params = json_encode($params);
@@ -338,13 +340,13 @@ class review_options_form extends moodleform {
         $cell->text = $text;
 
         if(strpos($class, 'populated')) {
-            $cell->attributes = array('class' => $class, 'title' => get_string('tooltipwarning', 'local_culrollover'));
+            $cell->attributes = ['class' => $class, 'title' => get_string('tooltipwarning', 'local_culrollover')];
         } elseif ($class == 'what') {
-            $cell->attributes = array('class' => $class, 'title' => 'click to edit except if template has been chosen');
+            $cell->attributes = ['class' => $class, 'title' => 'click to edit except if template has been chosen'];
         } elseif ($class == 'source' || $class == 'destination') {
-            $cell->attributes = array('class' => $class, 'title' => 'can\'t edit these now');
+            $cell->attributes = ['class' => $class, 'title' => 'can\'t edit these now'];
         } else {
-            $cell->attributes = array('class' => $class, 'title' => 'click to edit');
+            $cell->attributes = ['class' => $class, 'title' => 'click to edit'];
         }
 
         return $cell;
@@ -364,10 +366,10 @@ class review_options_form extends moodleform {
                 return get_string('copy_everything', 'local_culrollover');
                 break;
             default:
-                return array(
+                return [
                     COPY_CONTENT_ONLY => get_string('copy_content', 'local_culrollover'),
                     COPY_EVERYTHING => get_string('copy_everything', 'local_culrollover'),
-                    );
+                    ];
         }
 
     }
@@ -434,11 +436,11 @@ class review_options_form extends moodleform {
                 return get_string('coursevisibleon', 'local_culrollover');
                 break;
             default:
-                return array(
+                return [
                     COURSE_HIDDEN => get_string('hidecourse', 'local_culrollover'),
                     COURSE_VISIBLE_NOW => get_string('visiblecourse', 'local_culrollover'),
                     COURSE_VISIBLE_LATER => get_string('coursevisibleon', 'local_culrollover')
-                    );
+                    ];
         }
     }
 
@@ -450,7 +452,7 @@ class review_options_form extends moodleform {
     public function is_course_populated($courseid) {
         global $DB;
 
-        $query = $DB->count_records('course_modules', array('course' => $courseid));
+        $query = $DB->count_records('course_modules', ['course' => $courseid]);
         
         if($query > 1) {
             return true;
@@ -468,7 +470,7 @@ class review_options_form extends moodleform {
     public function get_course_name($courseid) {
         global $DB;
 
-        if ($course = $DB->get_record('course', array('id' => $courseid))){
+        if ($course = $DB->get_record('course', ['id' => $courseid])){
             return $course->shortname;
         }
 

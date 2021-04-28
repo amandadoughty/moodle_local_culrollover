@@ -252,7 +252,7 @@ class cul_ssp {
 			 cr.id,
 			 cr.schedule,
 			 cr.merge,
-			 cr.groups,
+			 cr.includegroups,
 			 cr.enrolments,
 			 cr.visible,
 			 cr.visibledate,
@@ -266,11 +266,11 @@ class cul_ssp {
 			 u.lastname,
 			 u.alternatename
 			 FROM {cul_rollover} cr
-			 INNER JOIN {course} sc
+			 LEFT OUTER JOIN {course} sc
 			 ON cr.sourceid = sc.id
-			 INNER JOIN {course} dc
+			 LEFT OUTER JOIN {course} dc
 			 ON cr.destid = dc.id
-			 INNER JOIN {user} u
+			 LEFT OUTER JOIN {user} u
 			 ON cr.userid = u.id
 			 $where
 			 $order
@@ -280,11 +280,11 @@ class cul_ssp {
 
 		$sql = "SELECT COUNT(*)
 			 FROM   {cul_rollover} cr
-			 INNER JOIN {course} sc
+			 LEFT OUTER JOIN {course} sc
 			 ON cr.sourceid = sc.id
-			 INNER JOIN {course} dc
+			 LEFT OUTER JOIN {course} dc
 			 ON cr.destid = dc.id
-			 INNER JOIN {user} u
+			 LEFT OUTER JOIN {user} u
 			 ON cr.userid = u.id
 			 $where";
 
@@ -292,11 +292,11 @@ class cul_ssp {
 
 		$sql = "SELECT COUNT(*)
 			 FROM   {cul_rollover} cr
-			 INNER JOIN {course} sc
+			 LEFT OUTER JOIN {course} sc
 			 ON cr.sourceid = sc.id
-			 INNER JOIN {course} dc
+			 LEFT OUTER JOIN {course} dc
 			 ON cr.destid = dc.id
-			 INNER JOIN {user} u
+			 LEFT OUTER JOIN {user} u
 			 ON cr.userid = u.id
 			 $whereAllSql";
 

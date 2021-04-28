@@ -8,14 +8,16 @@
   * @module local_culrollover/selectcourses
   */
 
-    define(['jquery', 'select2'], function($) {
+    define(['jquery', 'local_culrollover/select2'], function($) {
         return {
-            initialise: function (delay) {
+            initialise: function (delay, chars) {
                 // $.fn.select2.defaults.set("theme", "bootstrap");
+                window.console.log(chars);
                 
-                $('select.source_select').select2({
+                $('.source_select select.custom-select').select2({
                     placeholder: "Select a source module", // @TODO lang string
                     allowClear: true,
+                    minimumInputLength: chars,
                     ajax: {
                         url: "/local/culrollover/select2ajax.php",
                         dataType: 'json',
@@ -45,9 +47,10 @@
                     }
                 });
 
-                $('select.dest_select').select2({
+                $('.dest_select select.custom-select').select2({
                     placeholder: "Select a destination module", // @TODO lang string
                     allowClear: true,
+                    minimumInputLength: chars,
                     ajax: {
                         url: "/local/culrollover/select2ajax.php",
                         dataType: 'json',

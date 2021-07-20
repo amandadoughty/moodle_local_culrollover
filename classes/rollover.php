@@ -223,6 +223,8 @@ class rollover {
         $backupsettings = array();
 
         // Check for backup and restore options.
+        $this->debug("   Check for backup and restore options \n");
+
         if (!empty($options)) {
             foreach ($options as $option) {
                 // Strict check for a correct value (always 1 or 0, true or false).
@@ -246,6 +248,8 @@ class rollover {
         }
 
         // Backup the destination course.
+        $this->debug("   Backup the destination course \n");
+
         if($CFG->backupdestination) {
 
             $bc = new \backup_controller(
@@ -277,6 +281,8 @@ class rollover {
         }
 
         // Backup the source course.
+        $this->debug("   Backup the source course \n");
+
         $bc = new \backup_controller(
             \backup::TYPE_1COURSE, 
             $this->srccourse->id, 
@@ -296,6 +302,8 @@ class rollover {
         $bc->destroy();
 
         // Restore the backup immediately.
+        $this->debug("   Restore the backup immediately \n");
+
         if($mode == TARGET_COURSE_DELETE) {
             $rc = new \restore_controller(
                 $backupid, 
@@ -334,14 +342,24 @@ class rollover {
                 );
         }
 
+        $this->debug("   Set plan values \n");
+
         foreach ($backupsettings as $key => $value) {
             $rc->get_plan()->get_setting($key)->set_value($value);
         }
+
+        $this->debug("   Set task values \n");
 
         foreach ($rc->get_plan()->get_tasks() as $taskindex => $task) {
             $settings = $task->get_settings();
 
             foreach ($settings as $settingindex => $setting) {
+                // Some settings are set to locked for merging.
+                if ($setting->get_status() != \backup_setting::NOT_LOCKED) {
+                    $this->debug("   Setting: " . $setting->get_name() . " is locked \n");
+                    continue;
+                }
+
                 if (preg_match('/^keep_roles_and_enrolments$/', $setting->get_name())) {
                     $setting->set_value(true);
                 }
@@ -375,6 +393,8 @@ class rollover {
             }
         }
 
+        $this->debug("   Execute precheck \n");
+
         if (!$rc->execute_precheck()) {
             $precheckresults = $rc->get_precheck_results();
 
@@ -398,6 +418,8 @@ class rollover {
                 throw new \moodle_exception(get_string('backupprecheckerrors', 'local_culrollover', $errorinfo));
             }
         }
+
+        $this->debug("   Execute plan \n");
 
         try {
             $rc->execute_plan();
